@@ -1,47 +1,57 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+import q from "./data/quizes.json";
+import { ref, watch } from "vue";
+import Card from "./components/card.vue"
+
+const quizzes = ref(q);
+const search = ref("");
+
+watch(search, ()=>{
+  quizzes.value = q.filter(quiz => quiz.name.toLowerCase().includes(search.value.toLowerCase()))
+})
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div class="container">
+    <header>
+      <h1>Quizzes</h1>
+      <input v-model.trim="search" type="text" placeholder="Search...">
+    </header>
+    <div class="options-container">
+      <Card v-for="quiz in quizzes" :key="quiz.id" :quiz="quiz" />
     </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
+  </div>
+  
 </template>
 
 <style scoped>
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
 header {
-  line-height: 1.5;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+header h1 {
+  font-weight: bold;
+  margin-right: 30px;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+header input {
+  border: none;
+  background-color: darkgrey;
+  padding: 10px;
+  border-radius: 5px;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.options-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 40px;
 }
 </style>
